@@ -10,6 +10,7 @@ class HostsAttribute(AnsibleAttribute, NeedLibvirt, NeedIO, NeedSSH):
     atype = "hosts"
     defaults = None
     keys = Or([
+        String("wildcard*"),
         List(String("hosts")),
         Dict([VariableKeys(List(String("hosts")), example="hostname")])
     ])
@@ -67,8 +68,16 @@ class HostsAttribute(AnsibleAttribute, NeedLibvirt, NeedIO, NeedSSH):
         return inventory
 
     def _get_hosts(self):
-        if self.settings() is None:
-            return self._generate_hosts()
+        # Add python3 compatibility
+        try:
+            basestring
+        except NameError:
+            basestring = str
+
+        if isinstance(self.settings(), basestring):
+            instances = self.command().get_components(self.settings(), "node")
+            names = map(lambda i: i.entity(), instances)
+            return { "all": names }
 
         if isinstance(self.settings(), dict):
             return self.settings()
