@@ -76,6 +76,8 @@ class Command(Entity, HasStore):
         Select all components if the name matches the basename or
         the components entity name
 
+        This could be something like: basename* or nodename
+
         Args:
             name: Name or basename of the component
             ctype: return only components of a certain type
@@ -83,13 +85,13 @@ class Command(Entity, HasStore):
         Returns:
             A generator which generates all components
         """
-        for c in self.children():
-            if c.entity() == name or c.get("basename") == name:
+        for child in self.children():
+            if child.entity() == name or (child.get("basename")+"*") == name:
                 if ctype is not None:
-                    if ctype == c.ctype:
-                        yield c
+                    if ctype == child.ctype:
+                        yield child
                 else:
-                    yield c
+                    yield child
 
     def each_component(self, action, reverse=False):
         """run a action on all added components
