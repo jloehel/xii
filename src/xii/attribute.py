@@ -137,6 +137,14 @@ class Attribute(Entity, HasStore):
         """
         return self.parent()
 
+    def command(self):
+        """get the owning command
+
+        Returns:
+            The owning command
+        """
+        return self.component().command()
+
     def component_entity(self):
         """get the owing components entity
 
