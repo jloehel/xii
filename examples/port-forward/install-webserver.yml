@@ -1,0 +1,11 @@
+---
+
+- name: Install apache webserver
+  hosts: all
+  tasks:
+    - name: Install python xml module
+      shell: zypper --non-interactive install python-xml
+    - name: Install required packages
+      zypper: name="apache2" state=latest
+    - name: Enable apache2
+      service: name=apache2 enabled=yes state=restarted

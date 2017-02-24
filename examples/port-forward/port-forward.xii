@@ -1,0 +1,44 @@
+# vim: set ts=2 sw=2 tw=0 ft=yaml:
+---
+
+test-network:
+  type: network
+  mode: nat
+  ipv4:
+    ip: 192.168.111.1
+    dhcp:
+      start: 192.168.111.2
+      end: 192.168.111.254
+
+instances:
+  type: node
+  network: test-network
+  image: {{ image }}
+  graphic: yes
+  count: 2
+  ssh:
+    copy-key:
+      users:
+        - felixsch
+        - root
+  user:
+    felixsch:
+      password: felix
+    root:
+      password: linux
+      default: yes
+
+install-test-nodes:
+  type: ansible
+  hosts: instances*
+  run: install-webserver.yml
+
+# ssh-forward:
+#   type: forward
+#   port:
+#     - test-1:
+#         22: 8022
+#         80: 8080
+#     - test-2:
+#         22: 8023
+#         80: 8081
