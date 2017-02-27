@@ -93,7 +93,7 @@ class Command(Entity, HasStore):
                 else:
                     yield child
 
-    def each_component(self, action, reverse=False):
+    def each_component(self, action, args=None, reverse=False):
         """run a action on all added components
 
         This command can run a action (method) on each child. If parallel
@@ -117,9 +117,9 @@ class Command(Entity, HasStore):
                 count = self.get("global/workers", 3)
                 for name, group in groups:
                     self.say("{}ing {}s..".format(action, name))
-                    util.in_parallel(count, group, lambda o: o.run(action))
+                    util.in_parallel(count, group, lambda o: o.run(action, args, reverse))
             else:
-                self.each_child(action, reverse)
+                self.each_child(action, args, reverse)
         except KeyboardInterrupt:
             raise error.Interrupted()
 
