@@ -33,12 +33,12 @@ install-test-nodes:
   hosts: instances*
   run: install-webserver.yml
 
-# ssh-forward:
-#   type: forward
-#   port:
-#     - test-1:
-#         22: 8022
-#         80: 8080
-#     - test-2:
-#         22: 8023
-#         80: 8081
+ssh-forward:
+  type: forward
+  port:
+    test-1:
+      22: 8022
+      80: 8080
+    test-2:
+      22: 8023
+      80: 8081

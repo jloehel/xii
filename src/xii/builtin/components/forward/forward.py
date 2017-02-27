@@ -3,7 +3,7 @@ import libvirt
 from xii import error
 from xii.component import Component
 from xii.need import NeedLibvirt, NeedIO
-from xii.util import domain_has_state, domain_wait_state, wait_until_inactive
+from xii.util import flatten
 
 
 class ForwardComponent(Component, NeedLibvirt, NeedIO):
@@ -18,11 +18,17 @@ class ForwardComponent(Component, NeedLibvirt, NeedIO):
 
     requires = []
 
-    xml_dfn = {'devices': ""}
+    def has_forwards_for(self, instance):
+        nodes = flatten(self.each_attribute("forwarded_nodes"))
+        return instance in nodes
+
+    def get_forwards_for(self, instance):
+        forwards = self.each_attribute("forward_for", args={"instance": instance})
+        return flatten(forwards)
 
     def spawn(self):
-        pass
+        self.each_attribute("spawn")
 
     def destroy(self):
-        pass
+        self.each_attribute("destroy")
 

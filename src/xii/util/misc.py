@@ -1,8 +1,13 @@
 import md5
+import itertools
 
 from Crypto.PublicKey import RSA
 from concurrent.futures import ThreadPoolExecutor, Future
 from functools import partial
+
+
+def flatten(lists):
+    return itertools.chain.from_iterable(lists)
 
 def safe_get(name, structure):
     if name not in structure:
