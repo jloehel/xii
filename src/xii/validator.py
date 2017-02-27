@@ -145,20 +145,21 @@ class KeyValidator(Validator):
 
 class VariableKeys(KeyValidator):
 
-    def __init__(self, schema, example, desc=None):
+    def __init__(self, schema, example, keytype=String("key"), desc=None):
         KeyValidator.__init__(self, desc, example)
         self.name = "*"
         self.example = example
         self.schema = schema
+        self.keytype = keytype
 
     def validate(self, pre, structure):
-
         if not isinstance(structure, dict):
             raise error.ValidatorError("{} needs to be a dict".format(pre))
 
         def _validate_each(pair):
             (name, next_structure) = pair
-            return self.schema.validate(pre + " > " + name, next_structure)
+            self.keytype.validate(pre + " key", name)
+            return self.schema.validate(pre + " > " + str(name), next_structure)
         return sum(map(_validate_each, structure.items())) >= 1
 
     def structure(self, accessor):
@@ -204,6 +205,8 @@ class Dict(TypeCheck):
 
     def __init__(self, schemas, desc=None):
         TypeCheck.__init__(self, desc)
+        if not isinstance(schemas, list):
+            raise error.Bug("Dict internal schema must be a list (offending schema: {})".format(schemas))
         self.schemas = schemas
 
     def validate(self, pre, structure):
