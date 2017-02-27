@@ -234,7 +234,7 @@ class Entity(HasOutput):
     def children(self):
         return self._childs
 
-    def each_child(self, action, reverse=False):
+    def each_child(self, action, args=None, reverse=False):
         result = []
         if reverse:
             run = reversed(self._childs)
@@ -242,7 +242,11 @@ class Entity(HasOutput):
             run = self._childs
 
         for child in run:
-            result.append(child.run(action))
+            if args is None:
+                result.append(child.run(action))
+            else:
+                import pdb; pdb.set_trace()
+                result.append(child.run(action, **args))
         return result
 
     def child_index(self, entity):
